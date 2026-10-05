@@ -1,0 +1,22 @@
+flowchart LR
+  U[Browser: React SPA] -->|static assets| CDN[CDN: Cloudflare / CloudFront]
+  U -->|HTTPS /api| WAF[WAF + Rate Limiter]
+  WAF --> LB[Application Load Balancer]
+  LB --> API1[Express API Pod 1]
+  LB --> API2[Express API Pod 2]
+  LB --> APIN[Express API Pod N - HPA Autoscaled]
+  
+  API1 & API2 & APIN --> REDIS[(Redis Cluster: Cache-Aside & Locks)]
+  API1 & API2 & APIN --> MONGOS[mongos Query Routers]
+  
+  MONGOS --> S1[(Shard 1: Primary + 2 Secondaries)]
+  MONGOS --> S2[(Shard 2: Primary + 2 Secondaries)]
+  MONGOS --> SN[(Shard N: Primary + 2 Secondaries)]
+  
+  API1 & API2 & APIN -->|publish async events| Q[[Message Queue: AWS SQS / RabbitMQ]]
+  Q --> W[Background Workers: Overdue Sweep, Notifications]
+  W --> MONGOS
+  W --> EMAIL[Email & SMS Notification Service]
+  
+  API1 & API2 & APIN --> OBS[Observability: OpenTelemetry, Prometheus, Grafana]
+  S1 -. Mongo Change Stream .-> ES[(Search Cluster: Atlas Search / Elasticsearch)]

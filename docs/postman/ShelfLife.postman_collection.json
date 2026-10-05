@@ -1,0 +1,266 @@
+{
+  "info": {
+    "_postman_id": "shelflife-api-collection",
+    "name": "ShelfLife Library Management API",
+    "description": "Collection for testing all ShelfLife REST endpoints including auth, books, members, atomic borrowing, and returns.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "memberId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "borrowId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Login (Saves Token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.success && jsonData.data && jsonData.data.token) {",
+              "    pm.collectionVariables.set('token', jsonData.data.token);",
+              "    console.log('Token saved to collection variable:', jsonData.data.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"librarian@shelflife.test\",\n  \"password\": \"Passw0rd!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Books - Get Genres",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/books/genres",
+          "host": ["{{baseUrl}}"],
+          "path": ["books", "genres"]
+        }
+      }
+    },
+    {
+      "name": "Books - List Books (Public)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+              "    pm.collectionVariables.set('bookId', jsonData.data[0]._id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/books?page=1&limit=10&genre=&search=",
+          "host": ["{{baseUrl}}"],
+          "path": ["books"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "genre", "value": "" },
+            { "key": "search", "value": "" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Books - Create Book (Protected)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Design Patterns: Elements of Reusable Object-Oriented Software\",\n  \"author\": \"Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides\",\n  \"isbn\": \"9780201633610\",\n  \"genre\": \"Software Engineering\",\n  \"totalCopies\": 4,\n  \"availableCopies\": 4\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/books",
+          "host": ["{{baseUrl}}"],
+          "path": ["books"]
+        }
+      }
+    },
+    {
+      "name": "Members - List Members (Protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+              "    pm.collectionVariables.set('memberId', jsonData.data[0]._id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/members?page=1&limit=10&search=",
+          "host": ["{{baseUrl}}"],
+          "path": ["members"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "search", "value": "" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Members - Register Member (Protected)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Sarah Connor\",\n  \"email\": \"sarah.connor@example.com\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/members",
+          "host": ["{{baseUrl}}"],
+          "path": ["members"]
+        }
+      }
+    },
+    {
+      "name": "Borrow - Issue Book (Protected)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.success && jsonData.data && jsonData.data.borrowRecord) {",
+              "    pm.collectionVariables.set('borrowId', jsonData.data.borrowRecord._id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"bookId\": \"{{bookId}}\",\n  \"memberId\": \"{{memberId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/borrow",
+          "host": ["{{baseUrl}}"],
+          "path": ["borrow"]
+        }
+      }
+    },
+    {
+      "name": "Borrow - Return Book (Protected)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/return/{{borrowId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["return", "{{borrowId}}"]
+        }
+      }
+    },
+    {
+      "name": "Members - Borrow History (Protected)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/members/{{memberId}}/history?page=1&limit=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["members", "{{memberId}}", "history"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "status", "value": "", "disabled": true }
+          ]
+        }
+      }
+    }
+  ]
+}
