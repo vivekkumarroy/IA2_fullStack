@@ -48,7 +48,7 @@ const members = [
   { name: 'Henry Taylor', email: 'henry@example.com', membershipId: 'MEM-H00008' },
 ];
 
-async function seed() {
+async function seed({ disconnect = true } = {}) {
   try {
     await connectDB();
     console.log('🌱 Seeding database...\n');
@@ -165,11 +165,22 @@ async function seed() {
     console.log('   Email:    librarian@shelflife.test');
     console.log('   Password: Passw0rd!\n');
 
-    process.exit(0);
+    if (disconnect) {
+      await mongoose.connection.close();
+    }
   } catch (err) {
     console.error('❌ Seed error:', err);
-    process.exit(1);
+    if (disconnect) {
+      await mongoose.connection.close();
+    }
+    throw err;
   }
 }
 
-seed();
+if (require.main === module) {
+  seed().catch(() => {
+    process.exitCode = 1;
+  });
+}
+
+module.exports = { seed };

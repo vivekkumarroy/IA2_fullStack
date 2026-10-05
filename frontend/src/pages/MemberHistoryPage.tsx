@@ -31,7 +31,7 @@ export const MemberHistoryPage: React.FC = () => {
   const records = useMemo(() => historyData?.data || [], [historyData]);
 
   // Handle return book action
-  const handleReturn = async (borrowId: string) => {
+  const handleReturn = useCallback(async (borrowId: string) => {
     try {
       setReturningId(borrowId);
       const res = await returnBook(borrowId);
@@ -46,7 +46,7 @@ export const MemberHistoryPage: React.FC = () => {
     } finally {
       setReturningId(null);
     }
-  };
+  }, [reload]);
 
   // Helper to determine status badge text and variant as required by PRD §3.6
   const getStatusBadge = (record: PopulatedBorrowRecord) => {
@@ -154,7 +154,7 @@ export const MemberHistoryPage: React.FC = () => {
         },
       },
     ],
-    [returningId]
+    [handleReturn, returningId]
   );
 
   return (
