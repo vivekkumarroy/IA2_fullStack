@@ -8,6 +8,7 @@ import { AppLayout } from './components/layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
 import { BookListPage } from './pages/BookListPage';
 import { IssueBookPage } from './pages/IssueBookPage';
+import { CirculationPage } from './pages/CirculationPage';
 import { MembersPage } from './pages/MembersPage';
 import { MemberHistoryPage } from './pages/MemberHistoryPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -58,6 +59,7 @@ export const App: React.FC = () => {
           >
             <Route index element={<BookListPage />} />
             <Route path="issue" element={<IssueBookPage />} />
+            <Route path="circulation" element={<CirculationPage />} />
             <Route path="members" element={<MembersPage />} />
             <Route path="members/:id/history" element={<MemberHistoryPage />} />
           </Route>

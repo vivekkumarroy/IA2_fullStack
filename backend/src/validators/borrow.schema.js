@@ -22,10 +22,23 @@ const historyQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
+const circulationQuerySchema = z.object({
+  status: z.enum(['issued', 'returned', 'overdue']).optional(),
+  search: z.string().trim().max(120).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+});
+
 const memberIdParamSchema = z.object({
   id: z
     .string({ required_error: 'Member ID is required' })
     .regex(/^[0-9a-fA-F]{24}$/, 'Invalid member ID format'),
 });
 
-module.exports = { issueBookSchema, borrowIdParamSchema, historyQuerySchema, memberIdParamSchema };
+module.exports = {
+  issueBookSchema,
+  borrowIdParamSchema,
+  historyQuerySchema,
+  circulationQuerySchema,
+  memberIdParamSchema,
+};

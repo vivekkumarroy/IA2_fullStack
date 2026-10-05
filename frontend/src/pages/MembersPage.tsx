@@ -109,14 +109,14 @@ export const MembersPage: React.FC = () => {
       },
       {
         key: 'actions',
-        header: 'Borrow History',
+        header: 'Book history',
         render: (member) => (
           <Link
             to={`/members/${member._id}/history`}
             className="inline-flex items-center gap-1 rounded-lg bg-[#eef2ef] px-2.5 py-1.5 text-xs font-bold text-[#286050] transition hover:bg-[#dcebe4]"
           >
             <History className="w-3.5 h-3.5" />
-            View Loans
+            View history
           </Link>
         ),
       },
@@ -125,23 +125,23 @@ export const MembersPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-7">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="page-stack">
+      <div className="page-header">
         <div>
           <span className="page-eyebrow"><Users className="h-3.5 w-3.5" /> Community desk</span>
           <h1 className="page-title">Registered members</h1>
           <p className="page-copy">
-            Browse library members, inspect their borrow histories, or register new students.
+            Browse library members, inspect their book activity, or register new students.
           </p>
         </div>
-        <Button variant="primary" onClick={() => setIsRegisterModalOpen(true)}>
+        <div className="page-action"><Button variant="primary" onClick={() => setIsRegisterModalOpen(true)}>
           <UserPlus className="w-4 h-4 mr-1.5" />
           Register Member
-        </Button>
+        </Button></div>
       </div>
 
       {/* Search Input Bar */}
-      <div className="surface p-4 sm:max-w-2xl sm:p-5">
+      <div className="filter-surface sm:max-w-2xl">
         <label htmlFor="member-search" className="field-label">
           Search by Name or Email
         </label>
@@ -164,7 +164,7 @@ export const MembersPage: React.FC = () => {
       {error && <ErrorMessage message={error} onRetry={reload} />}
 
       {/* Members Table via DataTable<Member> */}
-      <div className="space-y-0">
+      <div className="data-region">
         <DataTable<Member>
           columns={columns}
           rows={membersData?.data || []}

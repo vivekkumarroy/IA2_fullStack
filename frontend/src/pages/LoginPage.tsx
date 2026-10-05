@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/common/Button';
 import { getErrorMessage } from '../utils/errors';
@@ -11,8 +11,8 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [email, setEmail] = useState('librarian@shelflife.test');
-  const [password, setPassword] = useState('Passw0rd!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,27 +47,19 @@ export const LoginPage: React.FC = () => {
       <div className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 rounded-full border-[48px] border-[#88a8a3]/15" />
       <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl items-center justify-center lg:justify-between lg:gap-20">
         <div className="mb-10 hidden max-w-sm lg:block">
-          <div className="flex items-center gap-3"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#e87861] p-1.5 shadow-[0_10px_25px_rgba(7,21,27,0.22)]"><ShelfLifeMark className="h-full w-full" /></span><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#eab495]">ShelfLife library desk</p></div>
+          <div className="flex items-center gap-4"><span className="grid h-16 w-16 place-items-center rounded-[1.4rem] bg-[#e87861] p-2 shadow-[0_10px_25px_rgba(7,21,27,0.22)]"><ShelfLifeMark className="h-full w-full" /></span><div><p className="font-serif text-4xl font-bold leading-none tracking-tight text-[#fff8ed]">Shelf<span className="text-[#f1b490]">Life</span></p><p className="mt-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#eab495]">Library desk</p></div></div>
           <h2 className="mt-5 font-serif text-5xl font-bold leading-[0.98] tracking-tight text-[#fff8ed]">Every library has a living story.</h2>
-          <p className="mt-6 text-base leading-7 text-[#c4d3d0]">Keep collections, loans, and member histories connected in one calm workspace.</p>
+          <p className="mt-6 text-base leading-7 text-[#c4d3d0]">Keep collections, book activity, and member histories connected in one calm workspace.</p>
         </div>
       <div className="w-full max-w-md">
-        {/* Brand Icon & Heading */}
-        <div className="text-center mb-8">
-          <div className="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-[1.7rem] bg-[#e87861] p-2.5 text-white shadow-xl shadow-[#0d2027]/30 ring-1 ring-white/20">
-            <ShelfLifeMark className="h-full w-full" />
-          </div>
-          <h1 className="font-serif text-4xl font-bold tracking-tight text-[#fff8ed]">
-            Shelf<span className="text-[#f1b490]">Life</span>
-          </h1>
-          <p className="mt-2 text-sm text-[#c4d3d0]">
-            Sign in to manage catalog, active loans, and member borrow records.
-          </p>
+        <div className="mb-8 text-center">
+          <h1 className="font-serif text-4xl font-bold tracking-tight text-[#fff8ed]">Welcome</h1>
+          <p className="mt-2 text-sm text-[#c4d3d0]">Sign in to manage books, active issues, and member book records.</p>
         </div>
 
         {/* Card */}
         <div className="rounded-2xl border border-[#f4eadd]/70 bg-[#fffdf9] p-6 shadow-[0_25px_80px_rgba(8,25,32,0.35)] sm:p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
             {error && (
               <div
                 role="alert"
@@ -91,7 +83,8 @@ export const LoginPage: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="librarian@shelflife.test"
+                  placeholder="you@library.edu"
+                  autoComplete="off"
                   required
                   disabled={submitting}
                   className="field-input pl-10"
@@ -113,6 +106,7 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete="off"
                   required
                   disabled={submitting}
                   className="field-input pl-10"
@@ -130,20 +124,11 @@ export const LoginPage: React.FC = () => {
               Sign In to Dashboard
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
+            <p className="pt-1 text-center text-sm leading-6 text-[#66717a]">
+              Need access? Ask your library administrator for a librarian account.
+            </p>
           </form>
 
-          {/* Dev Demo Credentials Box */}
-          <div className="-mx-6 -mb-6 mt-6 rounded-b-2xl border-t border-[#e5e0d7] bg-[#f4f0e8] p-4 pt-5 sm:-mx-8 sm:-mb-8">
-            <div className="flex items-start gap-2 text-xs text-[#66717a]">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#286050]" />
-              <div>
-                <span className="font-semibold text-[#263640]">Demo Seed Credentials:</span>
-                <div className="mt-0.5 font-mono text-[#53616a]">
-                  librarian@shelflife.test / Passw0rd!
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div></div>
     </div>

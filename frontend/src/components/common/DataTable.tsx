@@ -30,7 +30,8 @@ export function DataTable<T>({
 }: DataTableProps<T>): JSX.Element {
   return (
     <div className={`overflow-x-auto rounded-2xl border border-[#d8d3c9] bg-[#fffdf9] shadow-[0_10px_30px_rgba(39,49,53,0.055)] ${className}`}>
-      <table className="min-w-full text-left text-sm">
+      <p className="border-b border-[#e4e0d7] bg-[#f7f4ed] px-4 py-2 text-xs text-[#66717a] md:hidden">Swipe sideways to view all details.</p>
+      <table className="data-table min-w-[46rem] text-left text-sm md:min-w-full">
         <thead className="border-b border-[#d8d3c9] bg-[#f0ede5] text-[11px] font-bold uppercase tracking-[0.11em] text-[#65716f]">
           <tr>
             {columns.map((col) => (

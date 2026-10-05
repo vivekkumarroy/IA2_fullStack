@@ -6,7 +6,21 @@
   :root {
     color: #192531;
     background: #f7f4ed;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-display: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+    --text-caption: 0.75rem;
+    --text-ui: 0.875rem;
+    --text-body: 1rem;
+    --text-heading: 2rem;
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    font-family: var(--font-body);
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   * { border-color: rgb(214 211 202); }
@@ -15,20 +29,85 @@
     @apply min-h-screen antialiased;
     background-color: #f7f4ed;
     background-image: radial-gradient(circle at 18% -10%, rgba(232, 102, 76, 0.13), transparent 28rem), radial-gradient(circle at 90% 0%, rgba(27, 77, 95, 0.12), transparent 33rem);
+    font-size: var(--text-body);
+    font-kerning: normal;
+    line-height: 1.5;
   }
 
   button, input, select { font: inherit; }
+  h1, h2, h3 { text-wrap: balance; }
 
   ::selection { background: #efb7a8; color: #172a34; }
 }
 
 @layer components {
-  .page-eyebrow { @apply inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#9d3f31]; }
-  .page-title { @apply mt-2 font-serif text-3xl font-bold tracking-[-0.035em] text-[#182935] sm:text-4xl; }
-  .page-copy { @apply mt-2 max-w-2xl text-sm leading-6 text-[#66717a]; }
+  .page-eyebrow { @apply inline-flex items-center gap-2 text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-[#9d3f31]; }
+  .page-title { @apply mt-2 font-serif text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] text-[#182935] sm:text-[2.5rem]; font-family: var(--font-display); }
+  .page-copy { @apply mt-3 max-w-[65ch] text-base leading-7 text-[#66717a]; }
+  .page-stack { display: grid; gap: var(--space-2xl); }
+  .page-header { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-lg); }
+  .page-action { align-self: flex-start; }
+  .filter-surface { @apply surface; padding: var(--space-md); }
+  .data-region { display: grid; gap: var(--space-sm); }
+  .field-label { @apply mb-1.5 block text-[0.75rem] font-bold uppercase leading-4 tracking-[0.09em] text-[#53616a]; }
   .surface { @apply rounded-2xl border border-[#d8d3c9] bg-[#fffdf9] shadow-[0_10px_30px_rgba(39,49,53,0.055)]; }
-  .field-label { @apply mb-1.5 block text-xs font-bold uppercase tracking-[0.09em] text-[#53616a]; }
-  .field-input { @apply block w-full rounded-xl border border-[#cfc9be] bg-white px-3.5 py-2.5 text-sm text-[#263640] outline-none transition placeholder:text-[#9ba3a1] focus:border-[#1f6572] focus:ring-4 focus:ring-[#1f6572]/10 disabled:cursor-not-allowed disabled:bg-[#f1eee7] disabled:text-[#7c8687]; }
-  .modal-backdrop { @apply fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#172a34]/60 p-4; }
-  .modal-panel { @apply surface w-full p-6 shadow-[0_24px_80px_rgba(17,31,40,0.35)] sm:p-7; }
+  .field-input { @apply block w-full rounded-xl border border-[#cfc9be] bg-white px-3.5 py-2.5 text-sm text-[#263640] outline-none transition placeholder:text-[#9ba3a1] focus:border-[#1f6572] focus:ring-4 focus:ring-[#1f6572]/10 disabled:cursor-not-allowed disabled:bg-[#f1eee7] disabled:text-[#7c8687]; transition-duration: 180ms; transition-timing-function: var(--ease-out-quart); }
+  .page-enter { animation: shelf-page-in 240ms var(--ease-out-expo) both; }
+  .select-menu-enter { transform-origin: top; animation: shelf-menu-in 180ms var(--ease-out-quart) both; }
+  .mobile-nav-panel { transform-origin: top; animation: shelf-menu-in 180ms var(--ease-out-quart) both; }
+  .alert-enter { animation: shelf-alert-in 200ms var(--ease-out-quart) both; }
+  .success-moment { @apply flex flex-col gap-3 rounded-2xl border border-[#b9d6c9] bg-[#edf6f0] p-4 text-[#1f6048] sm:flex-row sm:items-center sm:justify-between; animation: shelf-success-in 240ms var(--ease-out-expo) both; }
+  .success-mark { animation: shelf-check-in 320ms var(--ease-out-expo) both; }
+  .modal-backdrop { @apply fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#172a34]/60 p-4; animation: shelf-fade-in 180ms var(--ease-out-quart) both; }
+  .modal-panel { @apply surface w-full p-6 shadow-[0_24px_80px_rgba(17,31,40,0.35)] sm:p-7; animation: shelf-modal-in 220ms var(--ease-out-expo) both; }
+  .data-table { font-variant-numeric: tabular-nums; }
+}
+
+@media (min-width: 640px) {
+  .page-header { align-items: flex-end; flex-direction: row; justify-content: space-between; }
+  .filter-surface { padding: var(--space-lg); }
+}
+
+@keyframes shelf-page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shelf-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes shelf-alert-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shelf-success-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shelf-check-in {
+  from { opacity: 0; transform: scale(0.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shelf-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shelf-modal-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

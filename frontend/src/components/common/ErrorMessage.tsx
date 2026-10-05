@@ -17,7 +17,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
     <div
       role="alert"
       aria-live="polite"
-      className={`rounded-2xl border border-[#efb6aa] bg-[#fbe7e1] p-4 text-[#8e352b] ${className}`}
+      className={`alert-enter rounded-2xl border border-[#efb6aa] bg-[#fbe7e1] p-4 text-[#8e352b] ${className}`}
     >
       <div className="flex items-start gap-3">
         <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-[#a73e35]" />

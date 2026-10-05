@@ -158,7 +158,7 @@ export const MemberHistoryPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-7">
+    <div className="page-stack">
       {/* Back button link */}
       <div>
         <Link
@@ -194,16 +194,16 @@ export const MemberHistoryPage: React.FC = () => {
             <div className="mt-1 font-mono text-sm font-bold text-[#263640]">{memberInfo.membershipId}</div>
             <div className="mt-1 flex items-center gap-1 text-xs text-[#83908d] sm:justify-end">
               <Clock className="w-3 h-3" />
-              Total Loans: {records.length}
+            Total book issues: {records.length}
             </div>
           </div>
         </div>
       )}
 
-      {/* Loans History Table */}
-      <div className="space-y-2">
+      {/* Book issue history table */}
+      <div className="data-region">
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-2xl font-bold text-[#1d2c34]">Borrow history</h2>
+          <h2 className="font-serif text-2xl font-bold text-[#1d2c34]">Book history</h2>
           <span className="text-xs text-[#74807f]">
             Real-time status calculated against current date
           </span>
@@ -214,7 +214,7 @@ export const MemberHistoryPage: React.FC = () => {
           rows={records}
           rowKey={(r) => r._id}
           loading={loading}
-          emptyMessage="No borrow history recorded for this member yet."
+          emptyMessage="No book activity recorded for this member yet."
         />
       </div>
     </div>

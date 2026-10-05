@@ -15,6 +15,7 @@ import {
   LoginRequest,
   LoginResponse,
   MemberHistoryResponse,
+  CirculationResponse,
 } from '../../types/api';
 import { mockBooks, mockMembers, mockBorrowRecords, mockLibrarian } from './data';
 
@@ -251,6 +252,28 @@ export const mockBorrowApi = {
         hasNext: false,
         hasPrev: false,
       },
+    };
+  },
+
+  async getCirculation(query: { page?: number; limit?: number; status?: string; search?: string } = {}): Promise<CirculationResponse> {
+    await delay(350);
+    let records = [...inMemoryBorrowRecords];
+    if (query.status) records = records.filter((record) => record.status === query.status);
+    if (query.search) {
+      const search = query.search.toLowerCase();
+      records = records.filter((record) =>
+        [record.book.title, record.book.author, record.book.isbn, record.member.name, record.member.email, record.member.membershipId]
+          .some((value) => value.toLowerCase().includes(search))
+      );
+    }
+    const page = query.page || 1;
+    const limit = query.limit || 10;
+    const total = records.length;
+    const totalPages = Math.ceil(total / limit) || 1;
+    const start = (page - 1) * limit;
+    return {
+      data: records.slice(start, start + limit),
+      meta: { page, limit, total, totalPages, hasNext: page < totalPages, hasPrev: page > 1 },
     };
   },
 };

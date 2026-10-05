@@ -4,6 +4,7 @@ import {
   IssueBookResponse,
   ReturnBookResponse,
   MemberHistoryResponse,
+  CirculationResponse,
 } from '../types/api';
 import { mockBorrowApi } from './mock';
 
@@ -31,4 +32,16 @@ export async function fetchMemberHistory(
     return mockBorrowApi.getMemberHistory(memberId);
   }
   return get<MemberHistoryResponse>(`/members/${memberId}/history`, params as Record<string, unknown>);
+}
+
+export async function fetchCirculation(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  search?: string;
+}): Promise<CirculationResponse> {
+  if (useMock) {
+    return mockBorrowApi.getCirculation(params);
+  }
+  return get<CirculationResponse>('/borrow/circulation', params as Record<string, unknown>);
 }

@@ -81,7 +81,7 @@ const issueBook = asyncHandler(async (req, res) => {
       throw new ApiError(
         409,
         'ALREADY_BORROWED',
-        'This member already has an active loan for this book'
+        'This member already has an active issue for this book'
       );
     }
 
@@ -217,4 +217,65 @@ const getMemberHistory = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { issueBook, returnBook, getMemberHistory };
+/**
+ * GET /api/borrow/circulation
+ * List every book issue across the library, including repeated issues of the
+ * same title to different members.
+ */
+const getCirculation = asyncHandler(async (req, res) => {
+  const { status, search, page, limit } = req.query;
+
+  // Keep overdue status current for the shared circulation register.
+  await BorrowRecord.updateMany(
+    { status: 'issued', dueDate: { $lt: new Date() } },
+    { $set: { status: 'overdue' } }
+  );
+
+  const filter = status ? { status } : {};
+  if (search) {
+    const pattern = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const [books, members] = await Promise.all([
+      Book.find({ $or: [{ title: pattern }, { author: pattern }, { isbn: pattern }] }).select('_id').lean(),
+      Member.find({ $or: [{ name: pattern }, { email: pattern }, { membershipId: pattern }] }).select('_id').lean(),
+    ]);
+
+    filter.$or = [
+      { book: { $in: books.map((book) => book._id) } },
+      { member: { $in: members.map((member) => member._id) } },
+    ];
+  }
+
+  const skip = (page - 1) * limit;
+  const [records, total] = await Promise.all([
+    BorrowRecord.find(filter)
+      .sort('-issueDate')
+      .skip(skip)
+      .limit(limit)
+      .populate('book', 'title author isbn genre totalCopies availableCopies')
+      .populate('member', 'name email membershipId')
+      .lean({ virtuals: true }),
+    BorrowRecord.countDocuments(filter),
+  ]);
+
+  const now = new Date();
+  const enriched = records.map((record) => ({
+    ...record,
+    effectiveStatus: record.status === 'issued' && record.dueDate < now ? 'overdue' : record.status,
+  }));
+
+  const totalPages = Math.ceil(total / limit);
+  res.status(200).json({
+    success: true,
+    data: enriched,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    },
+  });
+});
+
+module.exports = { issueBook, returnBook, getMemberHistory, getCirculation };

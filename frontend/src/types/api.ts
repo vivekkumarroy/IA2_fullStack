@@ -101,3 +101,5 @@ export interface MemberHistoryResponse {
   data: PopulatedBorrowRecord[];
   meta: MemberHistoryMeta;
 }
+
+export type CirculationResponse = Paginated<PopulatedBorrowRecord>;

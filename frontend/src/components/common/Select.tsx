@@ -110,7 +110,7 @@ export function Select<T>({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-30 mt-2 w-full overflow-hidden rounded-xl border border-[#cfc9be] bg-[#fffdf9] shadow-[0_18px_35px_rgba(27,48,55,0.18)]" role="presentation">
+        <div className="select-menu-enter absolute left-0 top-full z-30 mt-2 w-full overflow-hidden rounded-xl border border-[#cfc9be] bg-[#fffdf9] shadow-[0_18px_35px_rgba(27,48,55,0.18)]" role="presentation">
           <div className="border-b border-[#e5e0d7] bg-[#f7f4ed] p-2.5">
             <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#83908d]" /><input ref={searchRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={handleKeyDown} placeholder={`Search ${label.toLowerCase()}...`} className="block w-full rounded-lg border border-[#d8d3c9] bg-white py-2 pl-9 pr-3 text-sm text-[#263640] outline-none placeholder:text-[#9ba3a1] focus:border-[#1f6572] focus:ring-2 focus:ring-[#1f6572]/10" /></div>
           </div>

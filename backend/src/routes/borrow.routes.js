@@ -1,11 +1,12 @@
 const router = require('express').Router();
-const { issueBook, returnBook, getMemberHistory } = require('../controllers/borrow.controller');
+const { issueBook, returnBook, getMemberHistory, getCirculation } = require('../controllers/borrow.controller');
 const validate = require('../middleware/validate');
 const protect = require('../middleware/auth');
 const {
   issueBookSchema,
   borrowIdParamSchema,
   historyQuerySchema,
+  circulationQuerySchema,
   memberIdParamSchema,
 } = require('../validators/borrow.schema');
 
@@ -14,6 +15,9 @@ router.use(protect);
 
 // Issue a book
 router.post('/', validate(issueBookSchema, 'body'), issueBook);
+
+// Library-wide circulation register
+router.get('/circulation', validate(circulationQuerySchema, 'query'), getCirculation);
 
 // Return a book
 router.post(

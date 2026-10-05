@@ -150,9 +150,9 @@ export const BookListPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-7">
+    <div className="page-stack">
       {/* Header section with Title and Add Book button */}
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="page-header">
         <div>
           <span className="page-eyebrow"><BookOpen className="h-3.5 w-3.5" /> Collection desk</span>
           <h1 className="page-title">Library catalog</h1>
@@ -160,14 +160,14 @@ export const BookListPage: React.FC = () => {
             Browse collection, verify live stock counts, and filter across genres.
           </p>
         </div>
-        <Button variant="primary" onClick={() => setIsAddModalOpen(true)}>
+        <div className="page-action"><Button variant="primary" onClick={() => setIsAddModalOpen(true)}>
           <BookPlus className="w-4 h-4 mr-1.5" />
           Add New Book
-        </Button>
+        </Button></div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="surface grid gap-4 p-4 sm:p-5 md:grid-cols-[minmax(0,1fr)_16rem] md:items-end">
+      <div className="filter-surface grid gap-4 md:grid-cols-[minmax(0,1fr)_16rem] md:items-end">
         {/* Title Search Input */}
         <div className="flex-1">
           <label htmlFor="book-search" className="field-label">
@@ -206,7 +206,7 @@ export const BookListPage: React.FC = () => {
       {error && <ErrorMessage message={error} onRetry={reload} />}
 
       {/* Books Table & Pagination */}
-      <div className="space-y-0">
+      <div className="data-region">
         <DataTable<Book>
           columns={columns}
           rows={booksData?.data || []}
